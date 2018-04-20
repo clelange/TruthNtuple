@@ -3,22 +3,23 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("NTUP")
 
-process.TFileService = cms.Service("TFileService",
-                                   fileName=cms.string('flatTuple.root')
-                                   )
-
 ####### Config parser ##########
 import FWCore.ParameterSet.VarParsing as VarParsing
 
 options = VarParsing.VarParsing('analysis')
-options.maxEvents = 100
+options.maxEvents = -1
 options.inputFiles = 'file:/eos/cms//store/user/clange/WJetsToQQ_HT-800toInf/93X_mc2017_realistic_v3_2018-04-16/180416_160925/0000/WJetsToQQ_HT-800toInf_1.root'
+options.outputFile = 'flatTuple.root'
 options.parseArguments()
 process.options = cms.untracked.PSet(
     wantSummary=cms.untracked.bool(False),
     SkipEvent=cms.untracked.vstring('ProductNotFound'),
     allowUnscheduled=cms.untracked.bool(True)
 )
+
+process.TFileService = cms.Service("TFileService",
+                                   fileName=cms.string(options.outputFile)
+                                   )
 
 process.maxEvents = cms.untracked.PSet(
     input=cms.untracked.int32(options.maxEvents))
